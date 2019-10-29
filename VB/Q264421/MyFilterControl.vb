@@ -1,5 +1,4 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
+﻿Imports System
 Imports System.Drawing
 Imports System.Reflection
 Imports DevExpress.XtraEditors
@@ -11,11 +10,12 @@ Imports DevExpress.XtraEditors.Filtering
 Namespace DXSample
 	Public Class MyFilterControl
 		Inherits FilterControl
+
 		Protected Overrides Function CreateModel() As WinFilterTreeNodeModel
 			Return New MyWinFilterTreeNodeModel(Me)
 		End Function
 
-		Private Shared ReadOnly fCustomDrawFilterLabel As Object = New Object()
+		Private Shared ReadOnly fCustomDrawFilterLabel As New Object()
 		Public Custom Event CustomDrawFilterLabel As CustomDrawFilterLabelEventHandler
 			AddHandler(ByVal value As CustomDrawFilterLabelEventHandler)
 				Events.AddHandler(fCustomDrawFilterLabel, value)
@@ -37,12 +37,13 @@ Namespace DXSample
 
 	Public Class MyFilterControlLabelInfo
 		Inherits FilterControlLabelInfo
+
 		Public Sub New(ByVal node As Node)
 			MyBase.New(node)
 		End Sub
 
 		Public Overrides Sub Paint(ByVal info As ControlGraphicsInfoArgs)
-			ViewInfo.Calculate(info.Graphics)
+			ViewInfo.Calculate(info.Cache)
 			ViewInfo.TopLine = 0
 			For i As Integer = 0 To ViewInfo.Count - 1
 				Dim textViewInfo As FilterLabelInfoTextViewInfo = CType(ViewInfo(i), FilterLabelInfoTextViewInfo)
@@ -56,7 +57,7 @@ Namespace DXSample
 				If filterControl IsNot Nothing Then
 					filterControl.RaiseCustomDrawFilterLabel(args)
 				End If
-				If (Not args.Handled) Then
+				If Not args.Handled Then
 					ViewInfo(i).Draw(info.Cache, args.Font, args.ForeColor, args.StringFormat)
 				End If
 			Next i
@@ -67,6 +68,7 @@ Namespace DXSample
 	Public Delegate Sub CustomDrawFilterLabelEventHandler(ByVal sender As Object, ByVal e As CustomDrawFilterLabelEventArgs)
 	Public Class CustomDrawFilterLabelEventArgs
 		Inherits EventArgs
+
 		Public Sub New(ByVal labelType As ElementType, ByVal text As String, ByVal cache As GraphicsCache, ByVal bounds As Rectangle)
 			fLabelType = labelType
 			fLabelText = text
@@ -148,28 +150,26 @@ Namespace DXSample
 
 	Public Class MyWinFilterTreeNodeModel
 		Inherits WinFilterTreeNodeModel
+
 		Public Sub New(ByVal control As FilterControl)
 			MyBase.New(control)
 		End Sub
 
 		Public Overrides Sub OnVisualChange(ByVal action As FilterChangedActionInternal, ByVal node As Node)
-			If action = FilterChangedActionInternal.NodeAdded Then
-				CType(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))(node) = New MyFilterControlLabelInfo(node)
-			ElseIf action = FilterChangedActionInternal.RootNodeReplaced Then
-				Dim labels As Dictionary(Of Node, FilterControlLabelInfo) = CType(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))
+			If action Is FilterChangedActionInternal.NodeAdded Then
+				DirectCast(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))(node) = New MyFilterControlLabelInfo(node)
+			ElseIf action Is FilterChangedActionInternal.RootNodeReplaced Then
+				Dim labels As Dictionary(Of Node, FilterControlLabelInfo) = DirectCast(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))
 				labels.Clear()
-				RecursiveVisitor(RootNode, Function(child) AnonymousMethod1(child, labels))
+				RecursiveVisitor(RootNode, Sub(child)
+					Dim info = New MyFilterControlLabelInfo(child)
+					info.Clear()
+					info.CreateLabelInfoTexts()
+					labels(child) = info
+				End Sub)
 			Else
 				MyBase.OnVisualChange(action, node)
 			End If
 		End Sub
-		
-		Private Function AnonymousMethod1(ByVal child As Object, ByVal labels As Dictionary(Of Node, FilterControlLabelInfo)) As Boolean
-            Dim info = New MyFilterControlLabelInfo(CType(child, DevExpress.XtraEditors.Filtering.Node))
-			info.Clear()
-			info.CreateLabelInfoTexts()
-            labels(CType(child, DevExpress.XtraEditors.Filtering.Node)) = info
-			Return True
-		End Function
 	End Class
 End Namespace

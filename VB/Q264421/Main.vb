@@ -1,5 +1,4 @@
-﻿Imports Microsoft.VisualBasic
-Imports System
+﻿Imports System
 Imports DXSample
 Imports System.Linq
 Imports System.Drawing
@@ -8,10 +7,12 @@ Imports DevExpress.Data.Filtering
 Imports System.Collections.Generic
 Imports DevExpress.XtraEditors.Filtering
 Imports DevExpress.Data.Filtering.Helpers
+Imports DevExpress.XtraEditors
 
 Namespace Q264421
-	Partial Public Class Form1
-		Inherits Form
+	Partial Public Class Main
+		Inherits XtraForm
+
 		Public Sub New()
 			InitializeComponent()
 			Dim columns As New FilterColumnCollection()
@@ -30,7 +31,7 @@ Namespace Q264421
 				Case ElementType.Property
 					e.ForeColor = Color.Orange
 				Case ElementType.Operation
-					e.ForeColor = Color.Yellow
+					e.ForeColor = Color.Indigo
 				Case ElementType.Value
 					e.ForeColor = Color.Green
 				Case Else
