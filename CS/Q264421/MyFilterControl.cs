@@ -29,7 +29,7 @@ namespace DXSample {
         public MyFilterControlLabelInfo(Node node) : base(node) { }
 
         public override void Paint(ControlGraphicsInfoArgs info) {
-            ViewInfo.Calculate(info.Graphics);
+            ViewInfo.Calculate(info.Cache);
             ViewInfo.TopLine = 0;
             for (int i = 0; i < ViewInfo.Count; ++i) {
                 FilterLabelInfoTextViewInfo textViewInfo = (FilterLabelInfoTextViewInfo)ViewInfo[i];
