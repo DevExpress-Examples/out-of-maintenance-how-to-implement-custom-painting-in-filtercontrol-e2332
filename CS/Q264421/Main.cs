@@ -7,10 +7,11 @@ using DevExpress.Data.Filtering;
 using System.Collections.Generic;
 using DevExpress.XtraEditors.Filtering;
 using DevExpress.Data.Filtering.Helpers;
+using DevExpress.XtraEditors;
 
 namespace Q264421 {
-    public partial class Form1 :Form {
-        public Form1() {
+    public partial class Main: XtraForm {
+        public Main() {
             InitializeComponent();
             FilterColumnCollection columns = new FilterColumnCollection();
             columns.Add(new UnboundFilterColumn("Order ID", "OrderID", typeof(int), spinEdit, FilterColumnClauseClass.Generic));
@@ -25,7 +26,7 @@ namespace Q264421 {
             switch (e.LabelType) {
                 case ElementType.Group: e.ForeColor = Color.Red; break;
                 case ElementType.Property: e.ForeColor = Color.Orange; break;
-                case ElementType.Operation: e.ForeColor = Color.Yellow; break;
+                case ElementType.Operation: e.ForeColor = Color.Indigo; break;
                 case ElementType.Value: e.ForeColor = Color.Green; break;
                 default: e.ForeColor = Color.Blue; break;
             }
