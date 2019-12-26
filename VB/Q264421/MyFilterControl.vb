@@ -156,19 +156,19 @@ Namespace DXSample
 		End Sub
 
 		Public Overrides Sub OnVisualChange(ByVal action As FilterChangedActionInternal, ByVal node As Node)
-			If action Is FilterChangedActionInternal.NodeAdded Then
-				DirectCast(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))(node) = New MyFilterControlLabelInfo(node)
-			ElseIf action Is FilterChangedActionInternal.RootNodeReplaced Then
-				Dim labels As Dictionary(Of Node, FilterControlLabelInfo) = DirectCast(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))
-				labels.Clear()
-				RecursiveVisitor(RootNode, Sub(child)
-					Dim info = New MyFilterControlLabelInfo(child)
-					info.Clear()
-					info.CreateLabelInfoTexts()
-					labels(child) = info
-				End Sub)
-			Else
-				MyBase.OnVisualChange(action, node)
+            If action = FilterChangedActionInternal.NodeAdded Then
+                DirectCast(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))(node) = New MyFilterControlLabelInfo(node)
+            ElseIf action = FilterChangedActionInternal.RootNodeReplaced Then
+                Dim labels As Dictionary(Of Node, FilterControlLabelInfo) = DirectCast(GetType(WinFilterTreeNodeModel).GetField("labels", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(Me), Dictionary(Of Node, FilterControlLabelInfo))
+                labels.Clear()
+                RecursiveVisitor(RootNode, Sub(child)
+                                               Dim info = New MyFilterControlLabelInfo(child)
+                                               info.Clear()
+                                               info.CreateLabelInfoTexts()
+                                               labels(child) = info
+                                           End Sub)
+            Else
+                MyBase.OnVisualChange(action, node)
 			End If
 		End Sub
 	End Class
