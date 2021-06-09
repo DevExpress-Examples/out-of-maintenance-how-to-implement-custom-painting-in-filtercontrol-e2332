@@ -1,8 +1,8 @@
 <!-- default file list -->
 *Files to look at*:
 
-* [Form1.cs](./CS/Q264421/Form1.cs)
-* [MyFilterControl.cs](./CS/Q264421/MyFilterControl.cs)
+* [Main.cs](./CS/Q264421/Main.cs) / [Main.vb](./VB/Q264421/Main.vb)
+* [MyFilterControl.cs](./CS/Q264421/MyFilterControl.cs) / [MyFilterControl.vb](./VB/Q264421/MyFilterControl.vb)
 <!-- default file list end -->
 # How to implement custom painting in FilterControl
 
